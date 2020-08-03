@@ -91,7 +91,7 @@ def home(request):
 ### ♻️ django의 흐름
 <img src="./img/flow.png">
 
-### ♻️ django .gitignore
+### 🙈 django .gitignore
 ```
 *.pyc
 *~
@@ -101,3 +101,10 @@ db.sqlite3
 /static
 .DS_Store
 ```
+
+### pybo
+- main page
+<img src="./img/main.PNG">
+
+- detail page
+<img src="./img/detail.PNG">

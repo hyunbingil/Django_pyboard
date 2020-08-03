@@ -209,3 +209,55 @@ TEMPLATES = [
 {{ 객체 }} <!--객체 출력-->
 {{ 객체.속성 }} <!--속성이 있는 경우-->
 ```
+
+---
+
+## URL과 네임스페이스
+### URL 하드코딩
+: 상세조회를 위한 URL 링크에 사용하는 규칙은 웹 프로그램이 발전할 때마다 수정될 가능성이 크다. 
+``` html
+<li><a href="/pybo/{{ question.id }}/">{{ question.subject }}</a></li>
+```
+> ```"http://localhost:8000/pybo/question/2"``` 또는 ```"http://localhost:8000/pybo/2/question"``` 등으로 바뀔 수 있다.
+
+### URL 별칭
+: URL 매핑에 name 속성을 부여해 주어야 한다.
+``` py
+...
+path('', views.index, name="index"),
+path('<int:question_id>/', views.detail, name="detail"),
+...
+```
+### 템플릿에서 URL 별칭 사용하기
+``` html
+...
+    {% for question in question_list %}
+        <li><a href="{% url 'detail' question.id %}">{{ question.subject }}</a></li>
+    {% endfor %}
+...
+```
+> 하드코드 되어 있던 ```/pybo/{{ question.id }}``` 링크가 ```{% url 'detail' question.id %}```로 변경되었다. 여기서 ```question.id```는 URL매핑에 정의된 ```<int:question_id>```를 의미한다.
+
+### URL 네임스페이스
+: 서로 다른 앱에서 동일한 URL 별칭을 사용한다면 중복이 발생한다.\
+=> 이 문제를 해결하려면 ```pybo/urls.py``` 파일에 네임스페이스에 해당되는 ```app_name``` 변수를 지정
+- urls.py
+``` py
+from django.urls import path
+
+from . import views
+
+app_name = 'pybo'
+
+urlpatterns = [
+    path('', views.index, name="index"),
+    path('<int:question_id>/', views.detail, name="detail"),
+    # http://localhost:8000/pybo/<int:question_id>/ 가 적용되어
+    # question_id 에 2라는 값이 저장되고 views.detail 함수가 실행
+]
+```
+- question_list.html
+``` html
+<li><a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a></li>
+```
+> pybo:detail로 detail 앞에 pybo라는 네임 스페이스를 붙여준 것이다.
