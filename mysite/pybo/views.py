@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import Question
+from .forms import QuestionForm, AnswerForm
 
 def index(request):
     """
@@ -27,17 +28,35 @@ def answer_create(request, question_id):
     pybo 답변 등록
     """
     question = get_object_or_404(Question, pk=question_id)
-    question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
-    # POST로 전송된 폼 데이터 항목 중 content의 값을 의미.
-    # 답변 생성을 하기 위해 question.asnswer_set.create 사용
-    # question.answer_set은 질문의 답변을 의미한다.
-    # => ForeignKey로 연결 되어있기 때문에 이처럼 사용 가능.
-    return redirect('pybo:detail', question_id=question.id)
-    # 답변 생성 후 상세 조회 화면 호출을 위해 redirect 사용.
-    # question_id는 다음과 같이 정의된 URL매핑에 question_id 를 전달하기 위해 필요하다.
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.create_date = timezone.now()
+            answer.question = question
+            answer.save()
+            return redirect('pybo:detail', question_id=question.id)
+    else:
+        form = AnswerForm()
+    context = {'question': question, 'form': form}
+    return render(request, 'pybo/question_detail.html', context)
 
-
-    # Answer 모델을 직접 사용하는 방법
-    # question = get_object_or_404(Question, pk=question_id)
-    # answer = Answer(question=question, content=request.POST.get('content'), create_date=timezone.now())
-    # answer.save()
+def question_create(request):
+    """
+    pybo 질문등록
+    """
+    if request.method == 'POST': # 저장하기 버튼 클릭 시 post 방식으로 호출된다.
+        # 데이터 저장
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            # 폼에 연결된 모델을 저장하지 않고 생성된 모델 객체만 리턴(commit=False)
+            # 코드내에서 자동으로 생성되는 값을 저장하기 위해서는 이것을 사용해야함.
+            question.create_date = timezone.now()
+            question.save()
+            return redirect('pybo:index')
+    else: # 질문 등록하기 버튼 클릭했을 경우 get 방식으로 호출된다.
+        # 질문등록 화면 호출
+        form = QuestionForm()
+    context = {'form': form}
+    return render(request, 'pybo/question_form.html', context)
