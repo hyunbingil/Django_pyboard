@@ -28,6 +28,47 @@
             {% endif %}
             </tbody>
         </table>
+        <!-- 페이징처리 시작 -->
+        <ul class="pagination justify-content-center">
+            <!-- 이전페이지 -->
+            {% if question_list.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ question_list.previous_page_number }}">이전</a>
+                <!--{{ question_list.previous_page_number }} 의 의미는 page_obj.previous_page_number와 동일-->
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            <!-- 페이지리스트 -->
+            {% for page_number in question_list.paginator.page_range %}
+                {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+                <!--페이지수가 많아져서 30페이지가 될 경우 이동할 수 있는 페이지 30개가 모두 표시된다는 문제점 해결을 위해 위의 코드를 넣었다.-->
+                <!--|add:-5 는 5만큼 빼라는 의미의 장고 필터이고 |add:5는 5만큼 더하라는 의미의 장고 필터다.-->
+                {% if page_number == question_list.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                </li>
+                {% endif %}
+                {% endif %}
+            {% endfor %}
+            <!-- 다음페이지 -->
+            {% if question_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+        </ul>
+        <!-- 페이징처리 끝 -->
 
         <a href="{% url 'pybo:question_create' %}" class="btn btn-primary">
             질문 등록 하기
