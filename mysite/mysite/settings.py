@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    # 위 파일을 사용하면 로그인과 로그아웃 기능을 쉽게 구현할 수 있음.
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'pybo.apps.PyboConfig',
     # 이 파일은 pybo 앱 생성시 자동으로 만들어지는 파일로 따로 만들 필요가 없다.
     # 이미 아래 클래스가 구현되어 있을 것이다.
+    'common.apps.CommonConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
