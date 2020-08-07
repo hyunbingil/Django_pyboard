@@ -4,26 +4,28 @@
     <div class="container my-3">
         <table class="table">
             <thead>
-            <tr class="thead-dark">
+            <tr class="text-center thead-dark">
                 <th>번호</th>
-                <th>제목</th>
+                <th style="width:50%">제목</th>
+                <th>글쓴이</th>
                 <th>작성일시</th>
             </tr>
             </thead>
             <tbody>
             {% if question_list %}
             {% for question in question_list %}
-            <tr>
+            <tr class="text-center">
                 <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
                 <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
                 <!--question_list.paginator.count는 전체건수, question_list.start_index는 시작인덱스,
                     forloop.counter0는 루프의 현재인덱스 (forloop.counter는 1부터 시작하고 forloop.counter0는 0부터 시작한다.)-->
-                <td>
+                <td class="text-left">
                     <a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a>
                     {% if question.answer_set.count > 0 %}
                     <span class="text-danger small m1-2">{{ question.answer_set.count }}</span>
                     {% endif %}
                 </td>
+                <td>{{ question.author.username }}</td>  <!-- 글쓴이 추가 -->
                 <td>{{ question.create_date }}</td>
             </tr>
             {% endfor %}
