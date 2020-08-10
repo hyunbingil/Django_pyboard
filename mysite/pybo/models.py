@@ -22,3 +22,11 @@ class Answer(models.Model):
     modify_date = models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return self.subject
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE) # 글쓴이
+    content = models.TextField() # 댓글 내용
+    create_date = models.DateTimeField() # 작성일시
+    modify_date = models.DateTimeField(null=True, blank=True) # 수정일시
+    question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE) # 댓글 질문
+    answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE) # 댓글 답변
