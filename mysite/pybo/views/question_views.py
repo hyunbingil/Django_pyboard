@@ -18,7 +18,7 @@ def question_create(request):
             question = form.save(commit=False)
             # 폼에 연결된 모델을 저장하지 않고 생성된 모델 객체만 리턴(commit=False)
             # 코드내에서 자동으로 생성되는 값을 저장하기 위해서는 이것을 사용해야함.
-            answer.author = request.user
+            question.author = request.user
             question.create_date = timezone.now()
             question.save()
             return redirect('pybo:index')
